@@ -24,16 +24,51 @@ function printBanner() {
     console.log(colors.cyan + colors.bright);
     console.log('╔════════════════════════════════════════════════════════════════╗');
     console.log('║                                                                ║');
-    console.log('║           🎯 HTML to PowerPoint Converter Pro 🎯              ║');
+    console.log('║           🎯 HTML to PowerPoint Converter Pro 🎯               ║');
     console.log('║                                                                ║');
     console.log('║              Transform Your HTML Slides Instantly              ║');
+    console.log('║                                                                ║');
+    console.log('║                       github: @jeet1511                        ║');
     console.log('║                                                                ║');
     console.log('╚════════════════════════════════════════════════════════════════╝');
     console.log(colors.reset);
     console.log();
 }
 
-function printMenu() {
+function getProjectFolders() {
+    const inputPath = path.join(__dirname, INPUT_FOLDER);
+
+    if (!fs.existsSync(inputPath)) {
+        return [];
+    }
+
+    const items = fs.readdirSync(inputPath);
+    const folders = items.filter(item => {
+        const itemPath = path.join(inputPath, item);
+        return fs.statSync(itemPath).isDirectory();
+    });
+
+    return folders;
+}
+
+function printProjectMenu(projects) {
+    console.log(colors.yellow + '📁 Select Your Project:' + colors.reset);
+    console.log();
+
+    projects.forEach((project, index) => {
+        const projectPath = path.join(__dirname, INPUT_FOLDER, project);
+        const htmlFiles = fs.readdirSync(projectPath).filter(f => f.endsWith('.html'));
+
+        console.log(colors.blue + `  [${index + 1}]` + colors.reset + ' 📂 ' + colors.bright + project + colors.reset);
+        console.log(`      ${colors.green}${htmlFiles.length} HTML file(s)${colors.reset}`);
+        console.log();
+    });
+
+    console.log(colors.blue + `  [${projects.length + 1}]` + colors.reset + ' 🚪 ' + colors.bright + 'Exit' + colors.reset);
+    console.log();
+}
+
+function printConversionMenu() {
     console.log(colors.yellow + '📋 Choose Your Conversion Mode:' + colors.reset);
     console.log();
     console.log(colors.blue + '  [1]' + colors.reset + ' 🖼️  ' + colors.bright + 'Picture-Based' + colors.reset + ' (Pixel-Perfect Match)');
@@ -46,18 +81,20 @@ function printMenu() {
     console.log('      ✓ Native PowerPoint elements');
     console.log('      ✗ Layout may differ slightly');
     console.log();
-    console.log(colors.blue + '  [3]' + colors.reset + ' 🚪 ' + colors.bright + 'Exit' + colors.reset);
+    console.log(colors.blue + '  [3]' + colors.reset + ' 🔙 ' + colors.bright + 'Back to Projects' + colors.reset);
+    console.log();
+    console.log(colors.blue + '  [4]' + colors.reset + ' 🚪 ' + colors.bright + 'Exit' + colors.reset);
     console.log();
 }
 
-async function getUserChoice() {
+async function getUserChoice(prompt) {
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout
     });
 
     return new Promise((resolve) => {
-        rl.question(colors.green + '👉 Enter your choice (1, 2, or 3): ' + colors.reset, (answer) => {
+        rl.question(colors.green + prompt + colors.reset, (answer) => {
             rl.close();
             resolve(answer.trim());
         });
@@ -65,15 +102,17 @@ async function getUserChoice() {
 }
 
 // Picture-based conversion
-async function convertToPictureBased() {
-    const OUTPUT_FOLDER = path.join('HTML_TO_PPT', 'Picture-Based');
+async function convertToPictureBased(projectName) {
+    const OUTPUT_FOLDER = path.join('HTML_TO_PPT', projectName, 'Picture-Based');
+    const PROJECT_INPUT = path.join(INPUT_FOLDER, projectName);
 
-    console.log('\n' + colors.cyan + '🚀 Starting Picture-Based Conversion...' + colors.reset + '\n');
+    console.log('\n' + colors.cyan + '🚀 Starting Picture-Based Conversion...' + colors.reset);
+    console.log(colors.magenta + `📂 Project: ${projectName}` + colors.reset + '\n');
 
     const pptx = new PptxGenJS();
     pptx.layout = 'LAYOUT_16x9';
     pptx.author = 'Created by @jeet1511';
-    pptx.title = 'CRM Presentation (Picture-Based)';
+    pptx.title = `${projectName} Presentation (Picture-Based)`;
 
     console.log(colors.yellow + '🌐 Launching browser...' + colors.reset);
     const browser = await puppeteer.launch({
@@ -89,7 +128,7 @@ async function convertToPictureBased() {
             deviceScaleFactor: 2
         });
 
-        const inputPath = path.join(__dirname, INPUT_FOLDER);
+        const inputPath = path.join(__dirname, PROJECT_INPUT);
         const htmlFiles = fs.readdirSync(inputPath)
             .filter(file => file.endsWith('.html'))
             .sort((a, b) => {
@@ -140,7 +179,7 @@ async function convertToPictureBased() {
             fs.mkdirSync(outputPath, { recursive: true });
         }
 
-        const pptPath = path.join(outputPath, 'CRM-Presentation.pptx');
+        const pptPath = path.join(outputPath, `${projectName}-Presentation.pptx`);
         await pptx.writeFile({ fileName: pptPath });
 
         // Cleanup
@@ -153,7 +192,7 @@ async function convertToPictureBased() {
 
         console.log(colors.green + colors.bright + '\n✨ Success!' + colors.reset);
         console.log(colors.cyan + `📊 Total slides: ${htmlFiles.length}` + colors.reset);
-        console.log(colors.magenta + `📁 Location: ${OUTPUT_FOLDER}\\CRM-Presentation.pptx` + colors.reset);
+        console.log(colors.magenta + `📁 Location: ${OUTPUT_FOLDER}\\${projectName}-Presentation.pptx` + colors.reset);
         console.log(colors.yellow + '🎯 Quality: Pixel-perfect match to HTML!' + colors.reset);
 
     } finally {
@@ -394,17 +433,19 @@ function createSlide345(pptx, data) {
     });
 }
 
-async function convertToEditable() {
-    const OUTPUT_FOLDER = path.join('HTML_TO_PPT', 'Editable-Text');
+async function convertToEditable(projectName) {
+    const OUTPUT_FOLDER = path.join('HTML_TO_PPT', projectName, 'Editable-Text');
+    const PROJECT_INPUT = path.join(INPUT_FOLDER, projectName);
 
-    console.log('\n' + colors.cyan + '🚀 Starting Editable Text Conversion...' + colors.reset + '\n');
+    console.log('\n' + colors.cyan + '🚀 Starting Editable Text Conversion...' + colors.reset);
+    console.log(colors.magenta + `📂 Project: ${projectName}` + colors.reset + '\n');
 
     const pptx = new PptxGenJS();
     pptx.layout = 'LAYOUT_16x9';
     pptx.author = 'Created by @jeet1511';
-    pptx.title = 'CRM Presentation (Editable)';
+    pptx.title = `${projectName} Presentation (Editable)`;
 
-    const inputPath = path.join(__dirname, INPUT_FOLDER);
+    const inputPath = path.join(__dirname, PROJECT_INPUT);
     const htmlFiles = fs.readdirSync(inputPath)
         .filter(file => file.endsWith('.html'))
         .sort((a, b) => {
@@ -441,19 +482,19 @@ async function convertToEditable() {
         fs.mkdirSync(outputPath, { recursive: true });
     }
 
-    const pptPath = path.join(outputPath, 'CRM-Presentation.pptx');
+    const pptPath = path.join(outputPath, `${projectName}-Presentation.pptx`);
     await pptx.writeFile({ fileName: pptPath });
 
     console.log(colors.green + colors.bright + '\n✨ Success!' + colors.reset);
     console.log(colors.cyan + `📊 Total slides: ${htmlFiles.length}` + colors.reset);
-    console.log(colors.magenta + `📁 Location: ${OUTPUT_FOLDER}\\CRM-Presentation.pptx` + colors.reset);
+    console.log(colors.magenta + `📁 Location: ${OUTPUT_FOLDER}\\${projectName}-Presentation.pptx` + colors.reset);
     console.log(colors.yellow + '✏️  Quality: Fully editable text!' + colors.reset);
 }
 
 function printCredits() {
     console.log();
     console.log(colors.cyan + '═'.repeat(64) + colors.reset);
-    console.log(colors.magenta + colors.bright + '                    Created with ❤️  by' + colors.reset);
+    console.log(colors.magenta + colors.bright + '                    Created by Me' + colors.reset);
     console.log(colors.green + colors.bright + '                   GitHub: @jeet1511' + colors.reset);
     console.log(colors.cyan + '═'.repeat(64) + colors.reset);
     console.log();
@@ -461,25 +502,68 @@ function printCredits() {
 
 async function main() {
     printBanner();
-    printMenu();
 
-    const choice = await getUserChoice();
+    // Get available projects
+    const projects = getProjectFolders();
 
-    console.log();
-
-    if (choice === '1') {
-        await convertToPictureBased();
+    if (projects.length === 0) {
+        console.log(colors.red + '❌ No project folders found!' + colors.reset);
+        console.log(colors.yellow + '\n💡 Please create a project folder inside "HTML FILES" directory.' + colors.reset);
+        console.log(colors.cyan + '   Example: HTML FILES/MyProject/' + colors.reset);
+        console.log(colors.cyan + '   Then place your HTML files inside the project folder.' + colors.reset);
         printCredits();
-    } else if (choice === '2') {
-        await convertToEditable();
-        printCredits();
-    } else if (choice === '3') {
-        console.log(colors.yellow + '👋 Thanks for using HTML to PPT Converter!' + colors.reset);
+        process.exit(1);
+    }
+
+    // Show project selection menu
+    printProjectMenu(projects);
+    const projectChoice = await getUserChoice('👉 Select project number: ');
+
+    const projectIndex = parseInt(projectChoice) - 1;
+
+    if (projectIndex === projects.length) {
+        console.log(colors.yellow + '\n👋 Thanks for using HTML to PPT Converter!' + colors.reset);
         printCredits();
         process.exit(0);
-    } else {
-        console.log(colors.red + '❌ Invalid choice! Please run again and select 1, 2, or 3.' + colors.reset);
+    }
+
+    if (projectIndex < 0 || projectIndex >= projects.length) {
+        console.log(colors.red + '\n❌ Invalid project selection!' + colors.reset);
         process.exit(1);
+    }
+
+    const selectedProject = projects[projectIndex];
+
+    // Conversion loop for selected project
+    while (true) {
+        console.clear();
+        printBanner();
+        console.log(colors.magenta + colors.bright + `📂 Selected Project: ${selectedProject}` + colors.reset);
+        console.log();
+        printConversionMenu();
+
+        const choice = await getUserChoice('👉 Enter your choice (1, 2, 3, or 4): ');
+
+        if (choice === '1') {
+            await convertToPictureBased(selectedProject);
+            console.log(colors.yellow + '\n⏸️  Press Enter to continue...' + colors.reset);
+            await getUserChoice('');
+        } else if (choice === '2') {
+            await convertToEditable(selectedProject);
+            console.log(colors.yellow + '\n⏸️  Press Enter to continue...' + colors.reset);
+            await getUserChoice('');
+        } else if (choice === '3') {
+            // Back to project selection
+            main();
+            return;
+        } else if (choice === '4') {
+            console.log(colors.yellow + '\n👋 Thanks for using HTML to PPT Converter!' + colors.reset);
+            printCredits();
+            process.exit(0);
+        } else {
+            console.log(colors.red + '\n❌ Invalid choice! Please try again.' + colors.reset);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
     }
 }
 

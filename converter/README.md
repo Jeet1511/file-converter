@@ -19,24 +19,71 @@ Created with ❤️ by **[@jeet1511](https://github.com/jeet1511)**
 ## 📁 Folder Structure
 
 ```
-crm/
-├── HTML FILES/              ← Place your HTML files here
-├── Picture-Based PPT/       ← Picture-based output (Option 1)
-├── Editable-Text PPT/       ← Editable text output (Option 2)
+file-converter/
+├── HTML FILES/
+│   ├── Project1/            ← Create a folder for each project
+│   │   ├── 1.html
+│   │   ├── 2.html
+│   │   └── ...
+│   └── Project2/            ← Another project folder
+│       ├── 1.html
+│       └── ...
+├── HTML_TO_PPT/             ← Output folder (auto-created)
+│   ├── Project1/
+│   │   ├── Picture-Based/
+│   │   └── Editable-Text/
+│   └── Project2/
+│       ├── Picture-Based/
+│       └── Editable-Text/
 └── html-to-ppt-converter.js ← Main converter script
+```
+
+### 📌 Important: Project Folder Structure
+
+**You MUST create a project folder inside "HTML FILES" directory!**
+
+✅ **Correct:**
+```
+HTML FILES/
+└── MyPresentation/
+    ├── 1.html
+    ├── 2.html
+    └── 3.html
+```
+
+❌ **Incorrect:**
+```
+HTML FILES/
+├── 1.html
+├── 2.html
+└── 3.html
 ```
 
 ---
 
 ## 🚀 Quick Start
 
-### 1️⃣ Install Dependencies (First Time Only)
+### 1️⃣ Create Your Project Folder
+
+Create a folder for your project inside the `HTML FILES` directory and place your HTML files there:
+
+```powershell
+# Example: Create a project folder
+New-Item -ItemType Directory -Path "HTML FILES\MyPresentation"
+
+# Place your HTML files inside
+# HTML FILES\MyPresentation\1.html
+# HTML FILES\MyPresentation\2.html
+# etc.
+```
+
+### 2️⃣ Install Dependencies (First Time Only)
 
 ```powershell
 npm install
 ```
 
-### 2️⃣ Run the Converter
+### 3️⃣ Run the Converter
 
 ```powershell
 npm start
@@ -48,7 +95,25 @@ npm start
 node html-to-ppt-converter.js
 ```
 
-### 3️⃣ Choose Your Mode
+### 4️⃣ Select Your Project
+
+The converter will show you all available projects in the `HTML FILES` folder:
+
+```
+📁 Select Your Project:
+
+  [1] 📂 MyPresentation
+      5 HTML file(s)
+
+  [2] 📂 AnotherProject
+      3 HTML file(s)
+
+  [3] 🚪 Exit
+
+👉 Select project number:
+```
+
+### 5️⃣ Choose Your Mode
 
 You'll see a beautiful menu:
 
