@@ -1,6 +1,12 @@
 # 🎯 HTML to PowerPoint Converter Pro
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-14%2B-green.svg)](https://nodejs.org/)
+[![npm](https://img.shields.io/badge/npm-6%2B-red.svg)](https://www.npmjs.com/)
+
 > Transform your HTML slides into professional PowerPoint presentations instantly!
+
+A powerful Node.js tool that converts HTML slides to PowerPoint presentations with two conversion modes: pixel-perfect Picture-Based mode and fully editable Editable Text mode.
 
 Created with ❤️ by **[@jeet1511](https://github.com/jeet1511)**
 
@@ -206,16 +212,23 @@ You'll see a beautiful menu:
 
 ## 📦 Installation
 
-```powershell
-# Clone or download this project
-cd crm
+### Clone the Repository
 
-# Install dependencies
-npm install
-
-# Run the converter
-npm start
+```bash
+git clone https://github.com/jeet1511/html-to-ppt-converter.git
+cd html-to-ppt-converter
 ```
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+This will install:
+- `puppeteer` - For HTML rendering and screenshots
+- `pptxgenjs` - For PowerPoint generation
+- `jsdom` - For HTML parsing
 
 ---
 
@@ -239,17 +252,31 @@ npm start
 
 ---
 
-## 🤝 Credits
+## 🤝 Contributing
 
-**Created by:** [@jeet1511](https://github.com/jeet1511)
+Contributions are welcome! Here's how you can help:
 
-If you found this useful, give it a ⭐ on GitHub!
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/improvement`)
+3. Make your changes
+4. Commit your changes (`git commit -am 'Add new feature'`)
+5. Push to the branch (`git push origin feature/improvement`)
+6. Create a Pull Request
+
+---
+
+## ⭐ Show Your Support
+
+If you found this project useful, please consider:
+- Giving it a ⭐ on GitHub
+- Sharing it with others
+- Contributing to the project
 
 ---
 
 ## 📄 License
 
-MIT License - Feel free to use and modify!
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
@@ -264,14 +291,18 @@ MIT License - Feel free to use and modify!
 **Issue:** Browser launch fails
 - **Solution:** Puppeteer will auto-download Chromium on first install
 
+**Issue:** "No project folders found!"
+- **Solution:** Create a folder inside `HTML FILES` directory and place your HTML files there
+
 ---
 
 ## 💬 Support
 
-Found a bug or have a suggestion? Open an issue on GitHub!
+Found a bug or have a suggestion? 
 
-**GitHub:** [@jeet1511](https://github.com/jeet1511)
+- Open an issue on [GitHub Issues](https://github.com/jeet1511/html-to-ppt-converter/issues)
+- Contact: [@jeet1511](https://github.com/jeet1511)
 
 ---
 
-Made with ❤️ and ☕ by @jeet1511
+**Made with ❤️ by [@jeet1511](https://github.com/jeet1511)**
