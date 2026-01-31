@@ -1,0 +1,23 @@
+{
+    "name": "html-to-ppt-converter",
+    "version": "1.0.0",
+    "description": "Convert HTML slides to PowerPoint presentation",
+    "main": "html-to-ppt.js",
+    "scripts": {
+        "start": "node html-to-ppt-converter.js",
+        "convert": "node html-to-ppt-converter.js"
+    },
+    "keywords": [
+        "html",
+        "powerpoint",
+        "ppt",
+        "converter"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "puppeteer": "^21.0.0",
+        "pptxgenjs": "^3.12.0",
+        "jsdom": "^23.0.0"
+    }
+}
